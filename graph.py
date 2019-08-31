@@ -1,5 +1,7 @@
 import queue 
-#Grafo não direcionado 
+
+
+# Grafo não direcionado 
 class Graph:
     radius = 40
     tam = 0
@@ -56,6 +58,7 @@ class Graph:
                     if not self.visited[v]:
                         q.put(v)
         return ans
+
     def reset_graph(self):
         self.color = [self.UNCOLORED]*self.tam
         self.visited = [False]*self.tam
@@ -65,6 +68,7 @@ class Graph:
             self.color[v] = (self.color[u]+1)%2
         elif self.color[v] == self.color[u]:
             self.color[v] = self.RED
+            self.color[u] = self.RED
 
         return True
 
