@@ -2,6 +2,7 @@ import pygame
 import math
 from pygame.locals import *
 from assets import Palette
+from assets import Assets
 
 class Game:
     WIDTH = 600
@@ -37,4 +38,3 @@ class Game:
                     pygame.quit()
             pygame.display.update()
 
- 
