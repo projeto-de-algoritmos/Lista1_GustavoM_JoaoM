@@ -35,6 +35,14 @@ def draw_text(game, text, position, font_size=12, color=Palette.WHITE ):
     TextRect.center = (position)
     game.screen.blit(TextSurf, TextRect)
 
+def draw_button(game, position, text='', font_size=20, width=200, height=50, color=Palette.COLOR_6, font_color=Palette.WHITE):
+    x1 = position[0]-width/2
+    y1 = position[1]-height/2
+    x2 = width
+    y2 = height
+    pygame.draw.rect(game.screen, color,(x1,y1,x2,y2))
+    draw_text(game, text, position, font_size, font_color)
+
 def draw_graph(game, graph):
     game.circle_radius = graph.radius
     positions = get_positions(graph.tam)
