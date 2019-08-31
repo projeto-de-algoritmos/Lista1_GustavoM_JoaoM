@@ -13,6 +13,7 @@ help:
 		@echo ""
 
 install:
+		virtualenv env
 		$(BIN)pip3 install -r requirements.txt
 run:
 		$(BIN)python3 main.py
