@@ -25,12 +25,6 @@ class Game:
         self.screen.fill(Palette.COLOR_5)
         self.clock = pygame.time.Clock()
         pygame.display.set_caption(self.GAME_NAME)
-    
-    def print_graph(self, graph):
-        self.clock.tick(15)
-        #graph.bipartite()
-        self.screen.fill(Palette.COLOR_5)
-        draw_graph(game=self, graph=graph)
 
     def print_menu(self, mouse_pos=(0, 0), click=False):
         h_middle = self.WIDTH/2
@@ -78,12 +72,45 @@ class Game:
             
             pygame.display.update()
     
+    def print_game(self, mouse_pos=(0, 0), click=False):
+        self.screen.fill(Palette.WHITE)
+        h_middle = self.WIDTH/2
+        button_height = 50
+        button_width = 200
+        yes_pos = ((h_middle-120),(550))
+        no_pos = ((h_middle+120),(550))
+        yes_color = Palette.COLOR_6
+        no_color = Palette.COLOR_4
+        if is_inside_square(yes_pos, button_height, button_width, mouse_pos):
+            if click:
+                yes_color = Palette.COLOR_5
+            else:
+                yes_color = Palette.COLOR_8
+        if is_inside_square(no_pos, button_height, button_width, mouse_pos):
+            if click:
+                no_color = Palette.COLOR_5
+            else:
+                no_color = Palette.COLOR_8
+
+        h_middle = self.WIDTH/2
+        draw_text(game=self, text='Esse grafo é bipartido?', position=((h_middle),(40)), font_size=30, color=Palette.BLACK)
+        draw_graph(game=self, graph=self.graphs[0])
+        draw_button(game=self, position=yes_pos,  width=button_width, height=button_height, text='Sim', color=yes_color)
+        draw_button(game=self, position=no_pos,  width=button_width, height=button_height, text='Não', color=no_color)
+
     def run_game(self):
+        self.print_game()
         while self.running and self.state==self.GAME:
             for event in pygame.event.get():
+                if event.type == pygame.MOUSEBUTTONUP:
+                    pos = pygame.mouse.get_pos()
+                    self.print_game(mouse_pos=pos, click=True)
+                    print('click', pos)
+                if event.type == pygame.MOUSEMOTION:
+                    pos = pygame.mouse.get_pos()
+                    self.print_game(mouse_pos=pos, click=False)
                 if event.type == QUIT:
                     pygame.quit()
-            self.print_graph(self.graphs[0])
             pygame.display.update()
 
     def run(self, graphs):
