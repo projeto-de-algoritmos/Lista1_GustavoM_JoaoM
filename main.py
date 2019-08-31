@@ -7,4 +7,4 @@ for graph in graphs:
     print(graph.adj_list)
 
 g = Game()
-g.run()
+g.run(graphs)

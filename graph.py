@@ -1,17 +1,15 @@
 import queue 
 #Grafo não direcionado 
 class Graph:
+    radius = 40
+    tam = 0
+    adj_list = []
+    edges_list = set()
+    position = []
     def __init__(self, tam=0):
         self.tam=tam
-        self.adj_list = []
-        self.edges_list = set()
-        self.position = []
         for _ in range(self.tam):
             self.adj_list.append(set())
-            self.position.append((0, 0))
-
-    def add_node(self):
-        self.adj_list.append(set())
 
     def connect(self, i, j):
         if i>self.tam or i<=0:
