@@ -15,6 +15,8 @@ class Game:
         self.screen = pygame.display.set_mode((self.WIDTH, self.HEIGHT))
         self.screen.fill(Palette.COLOR_5)
         pygame.display.set_caption(self.GAME_NAME)
+        a = self.graphs[0].bipartite()
+        print(a)
         Assets.draw_graph(Assets, game=self, graph=self.graphs[0])
     
     def run(self, graphs):

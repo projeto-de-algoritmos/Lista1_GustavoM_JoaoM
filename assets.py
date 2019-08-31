@@ -10,7 +10,9 @@ class Palette:
     COLOR_3 = (181, 118, 173)
     COLOR_4 = (224, 70, 68)
     COLOR_5 = (253, 228, 127)
-    COLOR_6 = (124, 204, 229)
+    COLOR_6 = (67, 91, 198)
+    COLOR_7 = (104, 188, 39)
+    COLOR_8 = (35, 150, 170)
 
 class Assets:
     LINE_THICKNESS = 7
@@ -28,13 +30,24 @@ class Assets:
         game.circle_radius = graph.radius
         positions = self.get_positions(self, graph.tam)
         for i in range(graph.tam):
-            self.draw_node(self, game, positions[i])
+            if graph.color[i]==graph.UNCOLORED:
+                self.draw_node(self, game, positions[i])
+            elif graph.color[i]==graph.BLUE:
+                self.draw_node(self, game, positions[i], color=Palette.COLOR_6)
+            elif graph.color[i]==graph.GREEN:
+                self.draw_node(self, game, positions[i], color=Palette.COLOR_7)
+            elif graph.color[i]==graph.RED:
+                self.draw_node(self, game, positions[i], color=Palette.COLOR_4)
+            else:
+                print(graph.color[i])
+                
         for u, v in graph.edges_list:
              self.draw_edge(self, game, positions[u], positions[v])
             
-    def draw_node(self, game, position, color=Palette.COLOR_1):
-        pygame.draw.circle(game.screen, Palette.COLOR_1, position, game.circle_radius)
-    def draw_edge(self, game, pos1, pos2, color=Palette.COLOR_4):
+    def draw_node(self, game, position, color=Palette.COLOR_8):
+        pygame.draw.circle(game.screen, color, position, game.circle_radius)
+        
+    def draw_edge(self, game, pos1, pos2, color=Palette.COLOR_1):
         a = pos1[1]-pos2[1]
         b = pos2[0]-pos1[0]
         r = game.circle_radius

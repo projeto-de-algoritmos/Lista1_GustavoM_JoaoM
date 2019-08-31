@@ -6,10 +6,18 @@ class Graph:
     adj_list = []
     edges_list = set()
     position = []
+    color = []
+    visited = []
+    UNCOLORED = -1
+    BLUE = 0
+    GREEN = 1
+    RED = -2
     def __init__(self, tam=0):
         self.tam=tam
         for _ in range(self.tam):
             self.adj_list.append(set())
+            self.color.append(self.UNCOLORED)
+            self.visited.append(False)
 
     def connect(self, i, j):
         if i>self.tam or i<=0:
@@ -30,24 +38,34 @@ class Graph:
         self.adj_list[i-1].remove(j-1)
 
     def bipartite(self):
-        UNCOLORED = -1
-        BLUE = 0
-        RED = 1
-        color = [UNCOLORED]*self.tam
+        self.reset_graph()
         q = queue.Queue(maxsize=self.tam)
+        ans = True
         for i in range(self.tam):
-            if color[i]!=UNCOLORED:
+            if self.color[i]!=self.UNCOLORED:
                 continue
             q.put(i)
-            color[i]=BLUE
+            self.color[i]=self.BLUE
             while not q.empty():
                 u = q.get()
+                self.visited[u] = True
                 for v in self.adj_list[u]:
-                    if color[v] == UNCOLORED:
-                        color[v] = (color[u]+1)%2
+                    self.tint_node(u, v)
+                    if self.color[v] == self.color[u]:
+                        ans = False
+                    if not self.visited[v]:
                         q.put(v)
-                    elif color[v] == color[u]:
-                        return False
+        return ans
+    def reset_graph(self):
+        self.color = [self.UNCOLORED]*self.tam
+        self.visited = [False]*self.tam
+
+    def tint_node(self, u, v):
+        if self.color[v] == self.UNCOLORED:
+            self.color[v] = (self.color[u]+1)%2
+        elif self.color[v] == self.color[u]:
+            self.color[v] = self.RED
+
         return True
 
 def read_graphs(path):
