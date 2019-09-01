@@ -47,9 +47,9 @@ class Menu(Screen):
         super().__init__(game=game, background_color=Palette.COLOR_1)
         #Assets
         info_icon = pygame.image.load('info.png')
-        play_button = Button(screen=game.screen, position=((self.x_middle), (game.HEIGHT-200)),  on_press=lambda:game.change_screen(Question), text='Níveis padrões', width=300)
+        play_button = Button(screen=game.screen, position=((self.x_middle), (game.HEIGHT-200)),  on_press=lambda:game.change_screen(Question), text='Jogar', width=300)
         info_button = Button(screen=game.screen, position=((70), (40)),  on_press=lambda:game.change_screen(Info), icon=info_icon, text='Info', width=120, color=Palette.COLOR_1)
-        create_button = Button(screen=game.screen, position=((self.x_middle), (game.HEIGHT-100)),  on_press=lambda:game.change_screen(CreateLevel), text='Fases customizadas', width=300, color=Palette.GREEN)
+        create_button = Button(screen=game.screen, position=((self.x_middle), (game.HEIGHT-100)),  on_press=self.game.quit_game, text='Sair', width=300, color=Palette.RED)
         title = Text(screen=self.game.screen, position=((self.x_middle),(100)), text=self.game.GAME_NAME, font_size=60)
         sub_title = Text(screen=self.game.screen, position=((self.x_middle),(180)), text=self.game.INTRO_TEXT, font_size=34, font_color=Palette.COLOR_5)
         self.put_asset(play_button)
