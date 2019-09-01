@@ -3,23 +3,18 @@ import queue
 
 # Grafo não direcionado 
 class Graph:
-    radius = 40
-    tam = 0
-    adj_list = []
-    edges_list = set()
-    position = []
-    color = []
-    visited = []
     UNCOLORED = -1
     BLUE = 0
     GREEN = 1
     RED = -2
     def __init__(self, tam=0):
         self.tam=tam
+        self.edges_list = set()
+        self.color = [self.UNCOLORED]*self.tam
+        self.visited = [False]*self.tam
+        self.adj_list = []
         for _ in range(self.tam):
             self.adj_list.append(set())
-            self.color.append(self.UNCOLORED)
-            self.visited.append(False)
 
     def connect(self, i, j):
         if i>self.tam or i<=0:
