@@ -25,7 +25,12 @@ class Palette:
     COLOR_12 = (66, 66, 66)
 
 
-class Timer:
+class Asset:
+    def get_event(self, event, mouse_pos):
+        pass
+    def draw(self):
+        pass
+class Timer(Asset):
     def __init__(self, surface, color, rect, start_angle, stop_angle, width, on_finished=lambda:None):
         self.screen = surface
         self.color = color
@@ -35,15 +40,13 @@ class Timer:
         self.width = width
         self.on_finished = on_finished
         self.seconds = 0
-    def get_event(self, event, mouse_pos):
-        pass
     def draw(self):
         to_timer = 5 - self.seconds
         if to_timer < 0:
             self.on_finished()
         pygame.draw.arc(self.screen, self.color, self.rect, self.start_angle, self.stop_angle - 1.256*self.seconds, self.width)
 
-class Button:
+class Button(Asset):
     def __init__(self, screen, position, on_press=lambda:None, 
         on_focus=lambda:None, text='', font_size=30, 
         width=200, height=50, color=Palette.BLUE, font_color=Palette.WHITE, 
@@ -99,7 +102,7 @@ class Button:
             self.text.center = (self.center[0]+20, self.center[1])
         self.text.draw()
 
-class Text:
+class Text(Asset):
     def __init__(self, screen, position, text='', font_size=30, font_color=Palette.WHITE, font_type='freesansbold.ttf', padding=5):
         self.screen = screen
         self.text = text
@@ -109,8 +112,6 @@ class Text:
         self.padding = padding
         self.center = (position)
 
-    def get_event(self, event, mouse_pos):
-        pass
     def draw(self):
         lines = self.text.split('\n')
         n = len(lines)
@@ -127,7 +128,7 @@ class Text:
             y_pos+=self.font_size+self.padding
 
 
-class Graph:
+class Graph(Asset):
     def __init__(self, game, graph=graph.Graph(), reveal=False, circle_radius=40, line_thickness=7):
         self.graph = graph
         self.game = game
@@ -135,9 +136,6 @@ class Graph:
         self.line_thickness = line_thickness
         self.reveal = reveal
         self.positions = get_positions(self.graph.tam, self.game.WIDTH, self.game.HEIGHT)
-    
-    def get_event(self, event, mouse_pos):
-        pass
 
     def set_graph(self, graph):
         self.graph = graph
@@ -192,7 +190,10 @@ def get_positions(tam, screen_width, screen_heigth):
         return [(x_mid, y_mid-180), (x_mid-100, y_mid-90), (x_mid-200, y_mid), (x_mid-100, y_mid+120), (x_mid+100, y_mid+120), (x_mid+200, y_mid), (x_mid+100, y_mid-90)]
     elif tam==8:
         return [(x_mid, y_mid-180), (x_mid-150, y_mid-90), (x_mid-250, y_mid), (x_mid-150, y_mid+90), (x_mid, y_mid+180), (x_mid+150, y_mid+90), (x_mid+250, y_mid), (x_mid+150, y_mid-90)]
-
+    elif tam==9:
+        return [(x_mid, y_mid-220), (x_mid-150, y_mid-120), (x_mid-300, y_mid-20), (x_mid-300, y_mid+120), (x_mid-150, y_mid+200), (x_mid+150, y_mid+200), (x_mid+300, y_mid+120), (x_mid+300, y_mid-20), (x_mid+150, y_mid-120)]
+    elif tam==10:
+        return [(x_mid+100, y_mid-220), (x_mid-100, y_mid-220), (x_mid-225, y_mid-120), (x_mid-350, y_mid-20), (x_mid-350, y_mid+120), (x_mid-225, y_mid+200), (x_mid+225, y_mid+200), (x_mid+350, y_mid+120), (x_mid+350, y_mid-20), (x_mid+225, y_mid-120)]
 #
 #
 # Funções descontinuadas 
