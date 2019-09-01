@@ -8,9 +8,11 @@ from assets import Palette
 from assets import Timer
 
 
+
 class Screen:
-    def __init__(self, game, background_color, screen_id):
-        self.screen_id = screen_id
+    # Screen codes
+    ID = 0
+    def __init__(self, game, background_color):
         self.game = game
         self.background_color = background_color
         self.x_middle = self.game.WIDTH/2
@@ -30,7 +32,7 @@ class Screen:
             asset.draw()
     def run(self):
         self.build_function()
-        while self.game.running and self.game.current_screen==self.screen_id:
+        while self.game.running and self.game.current_screen==self.ID:
             for event in pygame.event.get():
                 for asset in self.assets:
                     asset.get_event(event, pygame.mouse.get_pos())
@@ -40,26 +42,36 @@ class Screen:
             pygame.display.update()
 
 class Menu(Screen):
+    ID = 1
     def __init__(self, game):
-        super().__init__(game=game, background_color=Palette.COLOR_1, screen_id=game.MENU)
+        super().__init__(game=game, background_color=Palette.COLOR_1)
         #Assets
         info_icon = pygame.image.load('info.png')
-        play_button = Button(screen=game.screen, position=((self.x_middle), (game.HEIGHT-200)),  on_press=lambda:game.change_screen(self.game.QUESTION), text='Jogar')
-        info_button = Button(screen=game.screen, position=((70), (40)),  on_press=lambda:game.change_screen(self.game.INFO), icon=info_icon, text='Info', width=120, color=Palette.COLOR_1)
-        quit_button = Button(screen=game.screen, position=((self.x_middle), (game.HEIGHT-100)),  on_press=game.quit_game, text='Sair', color=Palette.RED)
+        play_button = Button(screen=game.screen, position=((self.x_middle), (game.HEIGHT-200)),  on_press=lambda:game.change_screen(Question), text='Níveis padrões', width=300)
+        info_button = Button(screen=game.screen, position=((70), (40)),  on_press=lambda:game.change_screen(Info), icon=info_icon, text='Info', width=120, color=Palette.COLOR_1)
+        create_button = Button(screen=game.screen, position=((self.x_middle), (game.HEIGHT-100)),  on_press=lambda:game.change_screen(CreateLevel), text='Fases customizadas', width=300, color=Palette.GREEN)
         title = Text(screen=self.game.screen, position=((self.x_middle),(100)), text=self.game.GAME_NAME, font_size=60)
         sub_title = Text(screen=self.game.screen, position=((self.x_middle),(180)), text=self.game.INTRO_TEXT, font_size=34, font_color=Palette.COLOR_5)
         self.put_asset(play_button)
         self.put_asset(info_button)
-        self.put_asset(quit_button)
+        self.put_asset(create_button)
         self.put_asset(title)
         self.put_asset(sub_title)
+    def build_function(self):
+        self.game.correct_ans = 0
+        self.game.wrong_ans = 0
+
+class CreateLevel(Screen):
+    ID = 2
+    def __init__(self, game):
+        super().__init__(game=game, background_color=Palette.COLOR_9)
 
 class Info(Screen):
+    ID = 3
     def __init__(self, game):
-        super().__init__(game=game, background_color=Palette.COLOR_9, screen_id=game.INFO)
+        super().__init__(game=game, background_color=Palette.COLOR_9)
         # Assets
-        back_button = Button(screen=self.game.screen, position=((79), (40)), on_press=lambda:game.change_screen(self.game.MENU), text='Voltar', width=120)
+        back_button = Button(screen=self.game.screen, position=((79), (40)), on_press=lambda:game.change_screen(Menu), text='Voltar', width=120)
         title = Text(screen=self.game.screen, position=((self.x_middle),(40)), text='O que é um grafo bipartido?', font_size=38, font_color=Palette.BLACK)
         definition_text = open('definition.txt').read()
         definition = Text(screen=self.game.screen, position=((self.x_middle),(self.y_middle)), text=definition_text, font_size=24, font_type='robotoslab', font_color=Palette.BLACK)
@@ -68,8 +80,9 @@ class Info(Screen):
         self.put_asset(definition)
 
 class Question(Screen):
+    ID = 4
     def __init__(self, game):
-        super().__init__(game=game, background_color=Palette.COLOR_9, screen_id=game.QUESTION)
+        super().__init__(game=game, background_color=Palette.COLOR_9)
         # Assets
         self.timer = Timer(surface=self.game.screen, color=Palette.GREEN , rect=(20, 20, 60, 60) , start_angle=0 , stop_angle=2*math.pi, width=30, on_finished=lambda:self.game.no_answer_question())
         yes_button = Button(screen=self.game.screen, position=((self.x_middle-120), (self.game.HEIGHT-80)), on_press=lambda:self.game.answer_question(True), text='Sim', color=Palette.BLUE)
@@ -102,14 +115,13 @@ class Question(Screen):
         self.game.current_graph = self.game.graphs[self.game.current_question]
         self.timer.start_timer=pygame.time.get_ticks()
 
-
-
 class Answer(Screen):
+    ID = 5
     def __init__(self, game):
-        super().__init__(game=game, background_color=Palette.COLOR_9, screen_id=game.ANSWER)
+        super().__init__(game=game, background_color=Palette.COLOR_9)
 
         #Assets
-        quit_button = Button(screen=self.game.screen, position=((self.x_middle-120), (self.game.HEIGHT-80)), on_press=lambda:game.change_screen(self.game.MENU), text='Voltar para o menu', color=Palette.RED)
+        quit_button = Button(screen=self.game.screen, position=((self.x_middle-120), (self.game.HEIGHT-80)), on_press=lambda:game.change_screen(Menu), text='Voltar para o menu', color=Palette.RED)
         next_button = Button(screen=self.game.screen, position=((self.x_middle+120), (self.game.HEIGHT-80)), on_press=self.game.next_question, text='Próxima pergunta', color=Palette.BLUE)
         self.correct_ans = Text(screen=self.game.screen, position=((120),(20)), font_size=28, font_color=Palette.GREEN)
         self.wrong_ans = Text(screen=self.game.screen, position=((120),(40)), font_size=28, font_color=Palette.RED)

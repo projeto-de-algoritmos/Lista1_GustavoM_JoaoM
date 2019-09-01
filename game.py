@@ -5,6 +5,7 @@ from screens import Menu
 from screens import Question
 from screens import Answer
 from screens import Info
+from screens import CreateLevel
 
 class Game:
     # Game constants
@@ -12,12 +13,6 @@ class Game:
     HEIGHT = 768
     GAME_NAME = 'Jogo dos Grafos'
     INTRO_TEXT = 'Identifique\n os grafos bipartidos'
-    
-    #Screens
-    MENU = 1
-    QUESTION = 2
-    ANSWER = 3
-    INFO = 4
 
     #Question state
     CORRECT_ANSWER = 1
@@ -32,7 +27,7 @@ class Game:
     wrong_ans = 0
 
     current_graph = None
-    current_screen = MENU
+    current_screen = Menu.ID
     state_question = CORRECT_ANSWER
     graphs = []
     num_graph = 0
@@ -45,37 +40,30 @@ class Game:
         pygame.display.set_caption(self.GAME_NAME)
         icon = pygame.image.load('icon.png')
         pygame.display.set_icon(icon)
-        
+        self.screens = []
+        self.add_screen(Menu)
+        self.add_screen(Question)
+        self.add_screen(Answer)
+        self.add_screen(Info)
+        self.add_screen(CreateLevel)
         self.clock = pygame.time.Clock()
 
+    def add_screen(self, Screen):
+        self.screens.append(Screen(self))
+
     def run(self, graphs):
-        menu_screen = Menu(self)
-        question_screen = Question(self)
-        answer_screen = Answer(self)
-        info_screen = Info(self)
         pygame.init()
         self.graphs = graphs
         self.max_questions = len(graphs)
         while self.running:
-            if self.current_screen==self.MENU:
-                self.corrects_ans = 0
-                self.wrong_ans = 0
-                menu_screen.run()
-            elif self.current_screen==self.QUESTION:
-                question_screen.run()
-            elif self.current_screen==self.ANSWER:
-                 answer_screen.run()
-            elif self.current_screen==self.INFO:
-                 info_screen.run()
-
+            for screen in self.screens:
+                if self.current_screen==screen.ID:
+                    screen.run()
     def quit_game(self):
         self.running = False
 
     def change_screen(self, screen):
-        self.current_screen = screen
-
-    def start_game(self):
-        self.current_screen = self.QUESTION
+        self.current_screen = screen.ID
     
     def answer_question(self, ans):
         if self.current_graph.bipartite() == ans:
@@ -84,13 +72,13 @@ class Game:
         else:
             self.wrong_ans+=1
             self.state_question = self.WRONG_ANSWER
-        self.current_screen = self.ANSWER
+        self.change_screen(Answer)
 
     def no_answer_question(self):
         self.current_graph.bipartite()
         self.state_question = self.TIMES_UP
-        self.current_screen = self.ANSWER
+        self.change_screen(Answer)
 
     def next_question(self):
         self.current_question = (self.current_question+1)%self.max_questions #cicle
-        self.current_screen = self.QUESTION
+        self.change_screen(Question)
