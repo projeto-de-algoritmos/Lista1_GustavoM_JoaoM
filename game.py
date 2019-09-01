@@ -4,15 +4,20 @@ from pygame.locals import *
 from screens import Menu
 from screens import Question
 from screens import Answer
+from screens import Info
 
 class Game:
     WIDTH = 800
     HEIGHT = 600
     GAME_NAME = 'Jogo dos Grafos'
     INTRO_TEXT = 'Identifique\n os grafos bipartidos'
+    
+    #Screens
     MENU = 1
     QUESTION = 2
     ANSWER = 3
+    INFO = 4
+
     CORRECT_ANSWER = 4
     WRONG_ANSWER = 5
     
@@ -41,6 +46,7 @@ class Game:
         menu_screen = Menu(self)
         question_screen = Question(self)
         answer_screen = Answer(self)
+        info_screen = Info(self)
         pygame.init()
         self.graphs = graphs
         self.max_questions = len(graphs)
@@ -51,6 +57,8 @@ class Game:
                 question_screen.run()
             elif self.current_screen==self.ANSWER:
                  answer_screen.run()
+            elif self.current_screen==self.INFO:
+                 info_screen.run()
 
     def quit_game(self):
         self.running = False

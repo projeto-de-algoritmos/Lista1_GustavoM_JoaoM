@@ -27,9 +27,11 @@ class Palette:
 
 class Button:
     def __init__(self, screen, position, on_press=lambda:None, 
-        on_focus=lambda:None, text='', font_size=20, 
+        on_focus=lambda:None, text='', font_size=30, 
         width=200, height=50, color=Palette.BLUE, font_color=Palette.WHITE, 
-        focused_color=Palette.COLOR_8, press_color=Palette.COLOR_5):
+        focused_color=Palette.COLOR_8, press_color=Palette.COLOR_5,
+        icon=None):
+        self.icon = icon
         self.screen = screen
         self.center = position
         self.on_press = on_press
@@ -71,10 +73,16 @@ class Button:
         x1 = self.center[0]-self.width/2
         y1 = self.center[1]-self.height/2
         pygame.draw.rect(self.screen, b_color, (x1,y1, self.width, self.height))
+        if self.icon:
+            self.icon = pygame.transform.scale(self.icon, (30, 30))
+            rect = self.icon.get_rect()
+            rect.center = (x1+20, self.center[1])
+            self.screen.blit(self.icon, rect)
+            self.text.center = (self.center[0]+20, self.center[1])
         self.text.draw()
 
 class Text:
-    def __init__(self, screen, position, text='', font_size=20, font_color=Palette.WHITE, font_type='freesansbold.ttf', padding=5):
+    def __init__(self, screen, position, text='', font_size=30, font_color=Palette.WHITE, font_type='freesansbold.ttf', padding=5):
         self.screen = screen
         self.text = text
         self.font_color = font_color
@@ -90,13 +98,14 @@ class Text:
         if n!=1 and n%2==1:
             y_pos -= int(self.padding/2+self.font_size/2)
         x_pos = self.center[0]
-        self.style = pygame.font.Font(self.font_type, self.font_size)
+        self.style = pygame.font.SysFont(self.font_type, self.font_size)
         for line in lines:
             text_surf = self.style.render(line, True, self.font_color)
             text_rect = text_surf.get_rect()
             text_rect.center = (x_pos, y_pos)
             self.screen.blit(text_surf, text_rect)
             y_pos+=self.font_size+self.padding
+
 
 class Graph:
     def __init__(self, game, graph=graph.Graph(), reveal=False, circle_radius=40, line_thickness=7):

@@ -10,8 +10,10 @@ class Menu:
         self.game = game
         self.x_middle = game.WIDTH/2
         self.y_middle = game.HEIGHT/2
+        info_icon = pygame.image.load('info.png')
         #Assets
         self.play_button = Button(screen=game.screen, position=((self.x_middle), (game.HEIGHT-200)),  on_press=lambda:game.change_screen(self.game.QUESTION), text='Jogar')
+        self.info_button = Button(screen=game.screen, position=((70), (40)),  on_press=lambda:game.change_screen(self.game.INFO), icon=info_icon, text='Info', width=120, color=Palette.COLOR_1)
         self.quit_button = Button(screen=game.screen, position=((self.x_middle), (game.HEIGHT-100)),  on_press=game.quit_game, text='Sair', color=Palette.RED)
         self.title = Text(screen=self.game.screen, position=((self.x_middle),(100)), text=self.game.GAME_NAME, font_size=60)
         self.sub_title = Text(screen=self.game.screen, position=((self.x_middle),(180)), text=self.game.INTRO_TEXT, font_size=24, font_color=Palette.COLOR_5)
@@ -20,6 +22,7 @@ class Menu:
         self.game.screen.fill(Palette.COLOR_1)
         self.title.draw()
         self.sub_title.draw()
+        self.info_button.draw()
         self.play_button.draw()
         self.quit_button.draw()
 
@@ -28,6 +31,31 @@ class Menu:
             for event in pygame.event.get():
                 self.play_button.get_event(event, pygame.mouse.get_pos())
                 self.quit_button.get_event(event, pygame.mouse.get_pos())              
+                self.info_button.get_event(event, pygame.mouse.get_pos()) 
+                if event.type == QUIT:
+                    self.game.quit_game()
+            self.draw()
+            pygame.display.update()
+
+class Info:
+    def __init__(self, game):
+        self.game = game
+        self.x_middle = game.WIDTH/2
+        self.y_middle = game.HEIGHT/2
+        self.back_button = Button(screen=self.game.screen, position=((79), (40)), on_press=lambda:game.change_screen(self.game.MENU), text='Voltar', width=120)
+        self.title = Text(screen=self.game.screen, position=((self.x_middle),(40)), text='O que é um grafo bipartido?', font_size=38, font_color=Palette.BLACK)
+        definition = open('definition.txt').read()
+        self.text = Text(screen=self.game.screen, position=((self.x_middle),(self.y_middle)), text=definition, font_size=24, font_type='robotoslab', font_color=Palette.BLACK)
+    def draw(self):        
+        self.game.screen.fill(Palette.COLOR_9)
+        self.back_button.draw()
+        self.title.draw()
+        self.text.draw()
+
+    def run(self):
+        while self.game.running and self.game.current_screen==self.game.INFO:
+            for event in pygame.event.get():
+                self.back_button.get_event(event, pygame.mouse.get_pos())
                 if event.type == QUIT:
                     self.game.quit_game()
             self.draw()
