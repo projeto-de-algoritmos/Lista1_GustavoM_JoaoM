@@ -34,12 +34,14 @@ class Timer:
         self.stop_angle = stop_angle
         self.width = width
         self.on_finished = on_finished
-
-    def timer_run(self, seconds):
-        to_timer = 5 - seconds
+        self.seconds = 0
+    def get_event(self, event, mouse_pos):
+        pass
+    def draw(self):
+        to_timer = 5 - self.seconds
         if to_timer < 0:
             self.on_finished()
-        pygame.draw.arc(self.screen, self.color, self.rect, self.start_angle, self.stop_angle - 1.256*seconds, self.width)
+        pygame.draw.arc(self.screen, self.color, self.rect, self.start_angle, self.stop_angle - 1.256*self.seconds, self.width)
 
 class Button:
     def __init__(self, screen, position, on_press=lambda:None, 
@@ -107,6 +109,8 @@ class Text:
         self.padding = padding
         self.center = (position)
 
+    def get_event(self, event, mouse_pos):
+        pass
     def draw(self):
         lines = self.text.split('\n')
         n = len(lines)
@@ -132,6 +136,9 @@ class Graph:
         self.reveal = reveal
         self.positions = get_positions(self.graph.tam, self.game.WIDTH, self.game.HEIGHT)
     
+    def get_event(self, event, mouse_pos):
+        pass
+
     def set_graph(self, graph):
         self.graph = graph
         self.positions = get_positions(self.graph.tam, self.game.WIDTH, self.game.HEIGHT)
