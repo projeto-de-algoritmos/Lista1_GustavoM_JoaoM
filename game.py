@@ -7,8 +7,9 @@ from screens import Answer
 from screens import Info
 
 class Game:
-    WIDTH = 800
-    HEIGHT = 600
+    # Game constants
+    WIDTH = 1024
+    HEIGHT = 768
     GAME_NAME = 'Jogo dos Grafos'
     INTRO_TEXT = 'Identifique\n os grafos bipartidos'
     
@@ -18,16 +19,21 @@ class Game:
     ANSWER = 3
     INFO = 4
 
-    CORRECT_ANSWER = 4
-    WRONG_ANSWER = 5
-    
+    #Question state
+    CORRECT_ANSWER = 1
+    WRONG_ANSWER = 2
+    TIMES_UP = 3
+
     running = True
     current_question = 0
     max_questions = 0
+
+    corrects_ans = 0
+    wrong_ans = 0
+
     current_graph = None
     current_screen = MENU
     state_question = CORRECT_ANSWER
-    circle_radius = 40
     graphs = []
     num_graph = 0
 
@@ -52,6 +58,8 @@ class Game:
         self.max_questions = len(graphs)
         while self.running:
             if self.current_screen==self.MENU:
+                self.corrects_ans = 0
+                self.wrong_ans = 0
                 menu_screen.run()
             elif self.current_screen==self.QUESTION:
                 question_screen.run()
@@ -71,14 +79,16 @@ class Game:
     
     def answer_question(self, ans):
         if self.current_graph.bipartite() == ans:
+            self.corrects_ans+=1
             self.state_question = self.CORRECT_ANSWER
         else:
+            self.wrong_ans+=1
             self.state_question = self.WRONG_ANSWER
         self.current_screen = self.ANSWER
 
     def no_answer_question(self):
         self.current_graph.bipartite()
-        self.state_question = self.WRONG_ANSWER
+        self.state_question = self.TIMES_UP
         self.current_screen = self.ANSWER
 
     def next_question(self):

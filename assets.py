@@ -73,7 +73,7 @@ class Button:
             self.focused = False
             return    
         if self.focused and event.type == pygame.MOUSEBUTTONUP:
-            self.pressed = True
+            #self.pressed = True
             self.on_press()
         else:
             self.pressed = False

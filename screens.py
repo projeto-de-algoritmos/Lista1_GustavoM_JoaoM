@@ -69,21 +69,29 @@ class Question:
         self.x_middle = game.WIDTH/2
         self.y_middle = game.HEIGHT/2
         #Assets
-        self.timer = Timer(surface=self.game.screen, color=Palette.GREEN , rect=(60, 30, 60, 60) , start_angle=0 , stop_angle=2*math.pi, width=30, on_finished=lambda:self.game.no_answer_question())
+        self.timer = Timer(surface=self.game.screen, color=Palette.GREEN , rect=(20, 20, 60, 60) , start_angle=0 , stop_angle=2*math.pi, width=30, on_finished=lambda:self.game.no_answer_question())
         self.yes_button = Button(screen=self.game.screen, position=((self.x_middle-120), (self.game.HEIGHT-80)), on_press=lambda:self.game.answer_question(True), text='Sim', color=Palette.BLUE)
         self.no_button = Button(screen=self.game.screen, position=((self.x_middle+120), (self.game.HEIGHT-80)), on_press=lambda:self.game.answer_question(False), text='Não', color=Palette.RED)
         self.question = Text(screen=self.game.screen, text='Esse grafo é bipartido?' ,position=((self.x_middle),(60)), font_size=30, font_color=Palette.COLOR_10)
-        self.question_number = Text(screen=self.game.screen, text='( 1/2 )', position=((self.x_middle),(30)), font_size=20, font_color=Palette.COLOR_10)
+        self.question_number = Text(screen=self.game.screen, position=((self.x_middle),(30)), font_size=30, font_color=Palette.COLOR_10)
+        self.correct_ans = Text(screen=self.game.screen, position=((220),(40)), font_size=28, font_color=Palette.GREEN)
+        self.wrong_ans = Text(screen=self.game.screen, position=((220),(60)), font_size=28, font_color=Palette.RED)
         self.graph = Graph(game=self.game, reveal=False)
 
     def update_question(self):
         self.graph.set_graph(self.game.current_graph)
-        text = '( {}/{} )'.format(self.game.current_question+1, self.game.max_questions)
-        self.question_number.text = text
+        q_number = '( {}/{} )'.format(self.game.current_question+1, self.game.max_questions)
+        c_ans = 'Respostas certas: {}'.format(self.game.corrects_ans)
+        w_ans = 'Respostas erradas: {}'.format(self.game.wrong_ans)
+        self.question_number.text = q_number
+        self.wrong_ans.text = w_ans
+        self.correct_ans.text = c_ans
 
     def draw(self):        
         self.game.screen.fill(Palette.COLOR_9)
         self.update_question()
+        self.correct_ans.draw()
+        self.wrong_ans.draw()
         self.question_number.draw()
         self.question.draw()
         self.graph.draw()
@@ -117,6 +125,8 @@ class Answer:
         #Assets
         self.quit_button = Button(screen=self.game.screen, position=((self.x_middle-120), (self.game.HEIGHT-80)), on_press=lambda:game.change_screen(self.game.MENU), text='Voltar para o menu', color=Palette.RED)
         self.next_button = Button(screen=self.game.screen, position=((self.x_middle+120), (self.game.HEIGHT-80)), on_press=self.game.next_question, text='Próxima pergunta', color=Palette.BLUE)
+        self.correct_ans = Text(screen=self.game.screen, position=((120),(20)), font_size=28, font_color=Palette.GREEN)
+        self.wrong_ans = Text(screen=self.game.screen, position=((120),(40)), font_size=28, font_color=Palette.RED)
         self.answer = Text(screen=self.game.screen, position=((self.x_middle),(60)), font_size=30)
         self.graph = Graph(game=self.game, reveal=True)
     
@@ -125,17 +135,22 @@ class Answer:
         if self.game.state_question == self.game.CORRECT_ANSWER:
             self.answer.text = 'Resposta Correta!'
             self.answer.font_color = Palette.GREEN
-        else:
+        elif self.game.state_question == self.game.WRONG_ANSWER:
             self.answer.text = 'Resposta Errada'
+            self.answer.font_color = Palette.RED
+        elif self.game.state_question == self.game.TIMES_UP:
+            self.answer.text = 'O tempo acabou'
             self.answer.font_color = Palette.RED
             
     def draw(self):
         self.game.screen.fill(Palette.COLOR_9)
         self.update_ans()
-        self.answer.draw()
+        self.correct_ans.draw()
         self.graph.draw()
         self.quit_button.draw()
         self.next_button.draw()
+        self.wrong_ans.draw()
+        self.answer.draw()
 
     def run(self):
         while self.game.running and self.game.current_screen==self.game.ANSWER:
