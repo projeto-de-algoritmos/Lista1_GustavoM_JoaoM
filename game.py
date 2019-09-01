@@ -6,6 +6,7 @@ from screens import Question
 from screens import Answer
 from screens import Info
 from screens import CreateLevel
+from screens import Finish
 
 class Game:
     # Game constants
@@ -30,7 +31,6 @@ class Game:
     current_screen = Menu.ID
     state_question = CORRECT_ANSWER
     graphs = []
-    num_graph = 0
 
     def __init__(self):
         self.screen = pygame.display.set_mode((self.WIDTH, self.HEIGHT))
@@ -46,12 +46,13 @@ class Game:
         self.add_screen(Answer)
         self.add_screen(Info)
         self.add_screen(CreateLevel)
+        self.add_screen(Finish)
         self.clock = pygame.time.Clock()
 
     def add_screen(self, Screen):
         self.screens.append(Screen(self))
 
-    def run(self, graphs):
+    def run(self, graphs=[]):
         pygame.init()
         self.graphs = graphs
         self.max_questions = len(graphs)
@@ -65,6 +66,11 @@ class Game:
     def change_screen(self, screen):
         self.current_screen = screen.ID
     
+    def reset_points(self):
+        self.current_question = 0
+        self.wrong_ans = 0
+        self.corrects_ans = 0
+
     def answer_question(self, ans):
         if self.current_graph.bipartite() == ans:
             self.corrects_ans+=1
@@ -80,5 +86,9 @@ class Game:
         self.change_screen(Answer)
 
     def next_question(self):
-        self.current_question = (self.current_question+1)%self.max_questions #cicle
-        self.change_screen(Question)
+        self.current_question = self.current_question+1 
+        if self.current_question>=self.max_questions:
+            self.current_question = 0
+            self.change_screen(Finish)
+        else:
+            self.change_screen(Question)

@@ -58,8 +58,7 @@ class Menu(Screen):
         self.put_asset(title)
         self.put_asset(sub_title)
     def build_function(self):
-        self.game.correct_ans = 0
-        self.game.wrong_ans = 0
+        self.game.reset_points()
 
 class CreateLevel(Screen):
     ID = 2
@@ -121,11 +120,11 @@ class Answer(Screen):
         super().__init__(game=game, background_color=Palette.COLOR_9)
 
         #Assets
-        quit_button = Button(screen=self.game.screen, position=((self.x_middle-120), (self.game.HEIGHT-80)), on_press=lambda:game.change_screen(Menu), text='Voltar para o menu', color=Palette.RED)
-        next_button = Button(screen=self.game.screen, position=((self.x_middle+120), (self.game.HEIGHT-80)), on_press=self.game.next_question, text='Próxima pergunta', color=Palette.BLUE)
+        quit_button = Button(screen=self.game.screen, position=((120), (50)), on_press=lambda:game.change_screen(Menu), text='Voltar para o menu', color=Palette.RED)
+        next_button = Button(screen=self.game.screen, position=((self.x_middle), (self.game.HEIGHT-80)), on_press=self.game.next_question, text='Próxima pergunta', color=Palette.BLUE)
         self.correct_ans = Text(screen=self.game.screen, position=((120),(20)), font_size=28, font_color=Palette.GREEN)
         self.wrong_ans = Text(screen=self.game.screen, position=((120),(40)), font_size=28, font_color=Palette.RED)
-        self.answer = Text(screen=self.game.screen, position=((self.x_middle),(60)), font_size=30)
+        self.answer = Text(screen=self.game.screen, position=((self.x_middle),(60)), font_size=42)
         self.graph = Graph(game=self.game, reveal=True)
 
         self.put_asset(quit_button)
@@ -137,6 +136,10 @@ class Answer(Screen):
     
     def update_function(self):
         self.graph.set_graph(self.game.current_graph)
+        c_ans = 'Respostas certas: {}'.format(self.game.corrects_ans)
+        w_ans = 'Respostas erradas: {}'.format(self.game.wrong_ans)
+        self.wrong_ans.text = w_ans
+        self.correct_ans.text = c_ans
         if self.game.state_question == self.game.CORRECT_ANSWER:
             self.answer.text = 'Resposta Correta!'
             self.answer.font_color = Palette.GREEN
@@ -147,3 +150,22 @@ class Answer(Screen):
             self.answer.text = 'O tempo acabou'
             self.answer.font_color = Palette.RED
 
+class Finish(Screen):
+    ID = 6
+    def __init__(self, game):
+        super().__init__(game=game, background_color=Palette.COLOR_9)
+        title = Text(screen=self.game.screen, position=((self.x_middle),(100)), text='O jogo acabou', font_size=60, font_color=Palette.BLACK)
+        sub_title = Text(screen=self.game.screen, position=((self.x_middle),(180)), text='Sua pontuação foi: ', font_size=42, font_color=Palette.BLACK)
+        back_button = Button(screen=self.game.screen, position=((self.x_middle), (self.game.HEIGHT-80)), on_press=lambda:self.game.change_screen(Menu), text='Voltar para o menu', color=Palette.BLUE)
+        self.correct_ans = Text(screen=self.game.screen, position=((self.x_middle),(self.y_middle-30)), font_size=42, font_color=Palette.GREEN)
+        self.wrong_ans = Text(screen=self.game.screen, position=((self.x_middle),(self.y_middle+30)), font_size=42, font_color=Palette.RED)
+        self.put_asset(title)
+        self.put_asset(back_button)
+        self.put_asset(sub_title)
+        self.put_asset(self.correct_ans)
+        self.put_asset(self.wrong_ans)
+    def update_function(self):
+        c_ans = 'Respostas certas: {}'.format(self.game.corrects_ans)
+        w_ans = 'Respostas erradas: {}'.format(self.game.wrong_ans)
+        self.wrong_ans.text = w_ans
+        self.correct_ans.text = c_ans
