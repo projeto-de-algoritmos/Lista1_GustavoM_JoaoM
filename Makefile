@@ -8,12 +8,13 @@ help:
 		@echo "Como usar: make COMANDO"		
 		@echo ""
 		@echo "Commandos:"
-		@echo "install       Instala requerimentos necessários para rodar o projeto"
-		@echo "run         Executa o jogo"
+		@echo "build       Cria executavel do jogo"
+		@echo "run         Executa o jogo por linha de comando"
 		@echo ""
 
-install:
-		virtualenv env
+build:
 		$(BIN)pip3 install -r requirements.txt
+		$(BIN)pyinstaller main.py -n game --onefile
 run:
+		$(BIN)pip3 install -r requirements.txt
 		$(BIN)python3 main.py
