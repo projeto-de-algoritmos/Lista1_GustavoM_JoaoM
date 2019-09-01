@@ -120,10 +120,10 @@ class Answer(Screen):
         super().__init__(game=game, background_color=Palette.COLOR_9)
 
         #Assets
-        quit_button = Button(screen=self.game.screen, position=((120), (50)), on_press=lambda:game.change_screen(Menu), text='Voltar para o menu', color=Palette.RED)
+        quit_button = Button(screen=self.game.screen, position=((self.game.WIDTH-120), (50)), on_press=lambda:game.change_screen(Menu), text='Voltar para o menu', color=Palette.RED)
         next_button = Button(screen=self.game.screen, position=((self.x_middle), (self.game.HEIGHT-80)), on_press=self.game.next_question, text='Próxima pergunta', color=Palette.BLUE)
-        self.correct_ans = Text(screen=self.game.screen, position=((120),(20)), font_size=28, font_color=Palette.GREEN)
-        self.wrong_ans = Text(screen=self.game.screen, position=((120),(40)), font_size=28, font_color=Palette.RED)
+        self.correct_ans = Text(screen=self.game.screen, position=((220),(40)), font_size=28, font_color=Palette.GREEN)
+        self.wrong_ans = Text(screen=self.game.screen, position=((220),(60)), font_size=28, font_color=Palette.RED)
         self.answer = Text(screen=self.game.screen, position=((self.x_middle),(60)), font_size=42)
         self.graph = Graph(game=self.game, reveal=True)
 
