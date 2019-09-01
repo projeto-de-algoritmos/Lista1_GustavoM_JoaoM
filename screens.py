@@ -1,9 +1,11 @@
 import pygame 
+import math
 from pygame.locals import *
 from assets import Button
 from assets import Text
 from assets import Graph
 from assets import Palette
+from assets import Timer
 
 class Menu:
     def __init__(self, game):
@@ -39,6 +41,7 @@ class Question:
         self.x_middle = game.WIDTH/2
         self.y_middle = game.HEIGHT/2
         #Assets
+        self.timer = Timer(surface=self.game.screen, color=Palette.GREEN , rect=(60, 30, 60, 60) , start_angle=0 , stop_angle=2*math.pi, width=30, on_finished=lambda:self.game.no_answer_question())
         self.yes_button = Button(screen=self.game.screen, position=((self.x_middle-120), (self.game.HEIGHT-80)), on_press=lambda:self.game.answer_question(True), text='Sim', color=Palette.BLUE)
         self.no_button = Button(screen=self.game.screen, position=((self.x_middle+120), (self.game.HEIGHT-80)), on_press=lambda:self.game.answer_question(False), text='Não', color=Palette.RED)
         self.question = Text(screen=self.game.screen, text='Esse grafo é bipartido?' ,position=((self.x_middle),(60)), font_size=30, font_color=Palette.COLOR_10)
@@ -61,13 +64,21 @@ class Question:
 
     def run(self):
         self.game.current_graph = self.game.graphs[self.game.current_question]
+
+        start_timer=pygame.time.get_ticks()
+
         while self.game.running and self.game.current_screen==self.game.QUESTION:
             for event in pygame.event.get():
                 self.yes_button.get_event(event, pygame.mouse.get_pos())
                 self.no_button.get_event(event, pygame.mouse.get_pos())              
                 if event.type == QUIT:
                     self.game.quit_game()
+
             self.draw()
+
+            seconds=(pygame.time.get_ticks()-start_timer)/1000
+            self.timer.timer_run(seconds)
+            
             pygame.display.update()
 
 class Answer:
