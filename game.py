@@ -4,12 +4,6 @@ from pygame.locals import *
 from screens import Menu
 from screens import Question
 from screens import Answer
-from assets import Palette
-from assets import Button
-from assets import draw_text 
-from assets import draw_graph 
-from assets import draw_button 
-from assets import draw_graph_result 
 
 class Game:
     WIDTH = 800
@@ -26,7 +20,7 @@ class Game:
     current_question = 0
     max_questions = 0
     current_graph = None
-    state = MENU
+    current_screen = MENU
     state_question = CORRECT_ANSWER
     circle_radius = 40
     graphs = []
@@ -44,30 +38,36 @@ class Game:
         self.clock = pygame.time.Clock()
 
     def run(self, graphs):
+        menu_screen = Menu(self)
+        question_screen = Question(self)
+        answer_screen = Answer(self)
         pygame.init()
         self.graphs = graphs
         self.max_questions = len(graphs)
         while self.running:
-            if self.state==self.MENU:
-                self.menu_screen.run()
-            elif self.state==self.QUESTION:
-                self.question_screen.run()
-            elif self.state==self.ANSWER:
-                 self.answer_screen.run()
+            if self.current_screen==self.MENU:
+                menu_screen.run()
+            elif self.current_screen==self.QUESTION:
+                question_screen.run()
+            elif self.current_screen==self.ANSWER:
+                 answer_screen.run()
 
     def quit_game(self):
         self.running = False
 
+    def change_screen(self, screen):
+        self.current_screen = screen
+
     def start_game(self):
-        self.state = self.QUESTION
+        self.current_screen = self.QUESTION
     
     def answer_question(self, ans):
-        self.state = self.ANSWER
         if self.current_graph.bipartite() == ans:
             self.state_question = self.CORRECT_ANSWER
         else:
             self.state_question = self.WRONG_ANSWER
+        self.current_screen = self.ANSWER
 
     def next_question(self):
         self.current_question = (self.current_question+1)%self.max_questions #cicle
-        self.state = self.QUESTION
+        self.current_screen = self.QUESTION
