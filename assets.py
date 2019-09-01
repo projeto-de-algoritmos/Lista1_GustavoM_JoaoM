@@ -25,6 +25,22 @@ class Palette:
     COLOR_12 = (66, 66, 66)
 
 
+class Timer:
+    def __init__(self, surface, color, rect, start_angle, stop_angle, width, on_finished=lambda:None):
+        self.screen = surface
+        self.color = color
+        self.rect = rect
+        self.start_angle = start_angle
+        self.stop_angle = stop_angle
+        self.width = width
+        self.on_finished = on_finished
+
+    def timer_run(self, seconds):
+        to_timer = 5 - seconds
+        if to_timer < 0:
+            self.on_finished()
+        pygame.draw.arc(self.screen, self.color, self.rect, self.start_angle, self.stop_angle - 1.256*seconds, self.width)
+
 class Button:
     def __init__(self, screen, position, on_press=lambda:None, 
         on_focus=lambda:None, text='', font_size=30, 

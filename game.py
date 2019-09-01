@@ -76,6 +76,11 @@ class Game:
             self.state_question = self.WRONG_ANSWER
         self.current_screen = self.ANSWER
 
+    def no_answer_question(self):
+        self.current_graph.bipartite()
+        self.state_question = self.WRONG_ANSWER
+        self.current_screen = self.ANSWER
+
     def next_question(self):
         self.current_question = (self.current_question+1)%self.max_questions #cicle
         self.current_screen = self.QUESTION
