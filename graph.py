@@ -47,9 +47,11 @@ class Graph:
                 u = q.get()
                 self.visited[u] = True
                 for v in self.adj_list[u]:
-                    self.tint_node(u, v)
-                    if self.color[v] == self.color[u]:
-                        ans = False
+                    if self.color[v] == self.UNCOLORED:
+                        self.color[v] = (self.color[u]+1)%2
+                    elif self.color[v] == self.color[u]:
+                        self.color[u] = self.RED
+                        return False
                     if not self.visited[v]:
                         q.put(v)
         return ans
@@ -62,7 +64,6 @@ class Graph:
         if self.color[v] == self.UNCOLORED:
             self.color[v] = (self.color[u]+1)%2
         elif self.color[v] == self.color[u]:
-            self.color[v] = self.RED
             self.color[u] = self.RED
 
         return True

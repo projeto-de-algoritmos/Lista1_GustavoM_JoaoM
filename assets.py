@@ -203,6 +203,8 @@ class Graph(Asset):
                 self.draw_node(i=i, color=Palette.GREEN)
             elif self.graph.color[i]==self.graph.RED:
                 self.draw_node(i=i, color=Palette.RED)
+            else:
+                self.draw_node(i=i)
         for u, v in self.graph.edges_list:
             self.draw_edge(u, v)
 
