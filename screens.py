@@ -1,13 +1,13 @@
 import pygame 
 import math
 from pygame.locals import *
+import graph
 from assets import Button
 from assets import Text
 from assets import Graph
 from assets import Palette
 from assets import Timer
-
-
+from assets import Line
 
 class Screen:
     # Screen codes
@@ -47,7 +47,7 @@ class Menu(Screen):
         super().__init__(game=game, background_color=Palette.COLOR_1)
         #Assets
         info_icon = pygame.image.load('info.png')
-        play_button = Button(screen=game.screen, position=((self.x_middle), (game.HEIGHT-200)),  on_press=lambda:game.change_screen(Question), text='Jogar', width=300)
+        play_button = Button(screen=game.screen, position=((self.x_middle), (game.HEIGHT-200)),  on_press=self.game.start_game , text='Jogar', width=300)
         info_button = Button(screen=game.screen, position=((70), (40)),  on_press=lambda:game.change_screen(Info), icon=info_icon, text='Info', width=120, color=Palette.COLOR_1)
         create_button = Button(screen=game.screen, position=((self.x_middle), (game.HEIGHT-100)),  on_press=self.game.quit_game, text='Sair', width=300, color=Palette.RED)
         title = Text(screen=self.game.screen, position=((self.x_middle),(100)), text=self.game.GAME_NAME, font_size=60)
@@ -57,13 +57,53 @@ class Menu(Screen):
         self.put_asset(create_button)
         self.put_asset(title)
         self.put_asset(sub_title)
-    def build_function(self):
-        self.game.reset_points()
 
 class CreateLevel(Screen):
     ID = 2
+    graph_tam = 5
+    node_selected = -1
     def __init__(self, game):
         super().__init__(game=game, background_color=Palette.COLOR_9)
+        title = Text(screen=self.game.screen, position=((self.x_middle),(40)), text='Criação do grafo', font_size=38, font_color=Palette.BLACK)
+        back_button = Button(screen=self.game.screen, position=((self.game.WIDTH-120), (50)), on_press=lambda:game.change_screen(Menu), text='Voltar para o menu', color=Palette.RED)
+        new_graph = Button(screen=self.game.screen, position=((self.x_middle-120), (self.game.HEIGHT-80)), on_press=self.create_new, text='Inserir novo grafo', color=Palette.BLUE)
+        continue_button = Button(screen=self.game.screen, position=((self.x_middle+120), (self.game.HEIGHT-80)), on_press=self.play, text='Criar Fase', color=Palette.RED)
+        self.graph = Graph(game=self.game, graph=graph.Graph(self.graph_tam), editable=True, on_press=self.select_node)    
+        self.line = Line(screen=self.game.screen, mouse_guide=True, visible=False)
+        self.put_asset(title)
+        self.put_asset(self.line)
+        self.put_asset(back_button)
+        self.put_asset(self.graph)
+        self.put_asset(new_graph)
+        self.put_asset(continue_button)
+
+    def create_graph(self):
+        graph = self.graph.graph
+        self.game.custom_graphs.append(graph)
+    
+    def create_new(self):
+        self.create_graph()
+        self.game.change_screen(Menu)
+
+    def play(self):
+        self.create_graph()
+        self.game.start_game(self.game.CUSTOM)
+
+    def update_function(self):
+        if self.node_selected!=-1:
+            self.line.visible = True
+            self.line.pos1 = self.graph.positions[self.node_selected]
+        else:
+            self.line.visible = False
+    def select_node(self):
+        if(self.node_selected!=-1 and self.graph.node_select!=-1 and self.node_selected!=self.graph.node_select):
+            self.graph.graph.connect(self.node_selected+1, self.graph.node_select+1)
+            self.node_selected = -1
+            self.graph.node_select = -1
+        else:
+            self.node_selected = self.graph.node_select
+    def set_tam(self, tam):
+        self.graph_tam = tam
 
 class Info(Screen):
     ID = 3
@@ -77,6 +117,8 @@ class Info(Screen):
         self.put_asset(back_button)
         self.put_asset(title)
         self.put_asset(definition)
+
+    
 
 class Question(Screen):
     ID = 4

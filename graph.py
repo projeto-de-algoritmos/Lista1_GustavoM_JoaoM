@@ -74,10 +74,10 @@ def read_graphs(path):
 
     for content in contents:
         lines = content.split('\n')[1:-1]
-        tam, n = map(int, lines[0].split())
+        tam = int(lines[0])
         graph = Graph(tam)
-        for i in range(n):
-            u, v = map(int, lines[i+1].split())
+        for line in lines[1:]:
+            u, v = map(int, line.split())
             graph.connect(u, v)
         graphs.append(graph)
     return graphs

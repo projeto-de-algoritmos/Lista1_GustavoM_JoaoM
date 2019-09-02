@@ -20,17 +20,23 @@ class Game:
     WRONG_ANSWER = 2
     TIMES_UP = 3
 
+    # Game mods
+    STANDARD = 1
+    CUSTOM = 2
+
     running = True
     current_question = 0
     max_questions = 0
-
+    game_mode = STANDARD
     corrects_ans = 0
     wrong_ans = 0
 
     current_graph = None
-    current_screen = Menu.ID
+    current_screen = CreateLevel.ID
     state_question = CORRECT_ANSWER
     graphs = []
+    standard_graphs = []
+    custom_graphs = []
 
     def __init__(self):
         self.screen = pygame.display.set_mode((self.WIDTH, self.HEIGHT))
@@ -54,22 +60,28 @@ class Game:
 
     def run(self, graphs=[]):
         pygame.init()
-        self.graphs = graphs
+        self.standard_graphs = graphs
         self.max_questions = len(graphs)
         while self.running:
             for screen in self.screens:
                 if self.current_screen==screen.ID:
                     screen.run()
+    def start_game(self, game_mode=STANDARD):
+        self.current_question = 0
+        self.wrong_ans = 0
+        self.corrects_ans = 0
+        if game_mode == self.CUSTOM:
+            self.graphs = self.custom_graphs
+        else:
+            self.graphs = self.standard_graphs
+        self.max_questions = len(self.graphs)
+        self.change_screen(Question)
+
     def quit_game(self):
         self.running = False
 
     def change_screen(self, screen):
         self.current_screen = screen.ID
-    
-    def reset_points(self):
-        self.current_question = 0
-        self.wrong_ans = 0
-        self.corrects_ans = 0
 
     def answer_question(self, ans):
         if self.current_graph.bipartite() == ans:
