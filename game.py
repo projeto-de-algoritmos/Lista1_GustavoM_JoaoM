@@ -7,6 +7,7 @@ from screens import Answer
 from screens import Info
 from screens import CreateLevel
 from screens import Finish
+from screens import SelectTam
 
 class Game:
     # Game constants
@@ -32,7 +33,7 @@ class Game:
     wrong_ans = 0
 
     current_graph = None
-    current_screen = CreateLevel.ID
+    current_screen = Menu.ID
     state_question = CORRECT_ANSWER
     graphs = []
     standard_graphs = []
@@ -53,11 +54,18 @@ class Game:
         self.add_screen(Info)
         self.add_screen(CreateLevel)
         self.add_screen(Finish)
+        self.add_screen(SelectTam)
         self.clock = pygame.time.Clock()
 
     def add_screen(self, Screen):
         self.screens.append(Screen(self))
 
+    def select_tam(self, tam):
+        for screen in self.screens:
+            if screen.ID == CreateLevel.ID:
+                screen.set_tam(tam)
+                self.change_screen(CreateLevel)
+                return
     def run(self, graphs=[]):
         pygame.init()
         self.standard_graphs = graphs
