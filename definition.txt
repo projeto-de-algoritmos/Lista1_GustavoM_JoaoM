@@ -5,6 +5,10 @@ conjuntos disjuntos U e V tais que toda
 aresta conecta um vértice em U a um vértice em V; 
 ou seja, U e V são conjuntos independentes.
 
-Neste jogo você deve identificar quais os grafos
-bipartidos. Para isso você tem o tempo de 5 segundos
-para responder cada pergunta
+Simplificando, se pintamos todos os vértices (nós)
+que pertecem ao conjunto U de uma cor e todos os
+vértices que pertecem ao conjunto V de outra, 
+nenhum nó será conectado à outro de mesma cor.
+
+Neste jogo você deve identificar se um grafo é
+bipartido em até 5 segundos.
