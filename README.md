@@ -1,31 +1,26 @@
-# Bipartite graph game 
+# Bipartite Graph Game 
 
 ## Descrição
 
-Projeto da disciplina Projeto e Análise de Algorítimos baseado em grafos bipartidos. O intuito do jogo é a identificação de grafos bipartidos
+Primeiro trabalho da disciplina Projeto e Análise de Algorítimos. 
 
-## Requisitos recomendados
+Jogo de identificação de grafos bipartidos.
+
+Dupla:
+- Gustavo Marques; 
+- João Rodrigues. 
+
+## Requisitos Recomendados
 
 ### pip3
 ```shell
 sudo apt-get install python3-pip
 ```
-### Virtualenv
-```shell
-sudo pip3 install virtualenv
-```
-### Criação da maquina virtual
-```shell
-virtualenv env
-```
+
 ## Como rodar 
     
-Para execução do projeto primeiro é recomendado a ultilização de uma maquina virtual para a instalação dos requisitos
+Para execução do projeto é necessário instalar os requisitos necessários.
 
-### Rodando máquina virtual
-```shell
-source env/bin/activate
-```
 ### Instalação dos requisitos
 ```shell
 make install
