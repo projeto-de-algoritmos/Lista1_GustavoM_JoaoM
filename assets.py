@@ -67,7 +67,6 @@ class Button(Asset):
         self.text = Text(screen=self.screen, text=text, position=self.center, font_size=font_size, font_color=font_color)
 
     def get_event(self, event, mouse_pos):
-        mouse_pos = mouse_pos
         x1 = self.center[0]-self.width/2
         y1 = self.center[1]-self.height/2
         x2 = self.center[0]+self.width/2
@@ -126,10 +125,29 @@ class Text(Asset):
             text_rect.center = (x_pos, y_pos)
             self.screen.blit(text_surf, text_rect)
             y_pos+=self.font_size+self.padding
+    
+class Line(Asset):
+    def __init__(self, screen, pos1=(0, 0), pos2=(0, 0), line_thickness=7, visible=True, color=Palette.COLOR_12, mouse_guide=False):
+        self.screen = screen
+        self.pos1 = pos1
+        self.pos2 = pos2
+        self.line_thickness = line_thickness
+        self.visible = visible
+        self.color = color
 
+    def get_event(self, event, mouse_pos):
+        self.pos2 = (mouse_pos[0], mouse_pos[1])
+
+    def draw(self):
+        if self.visible:
+            pygame.draw.line(self.screen, self.color, self.pos1, self.pos2, self.line_thickness)
 
 class Graph(Asset):
-    def __init__(self, game, graph=graph.Graph(), reveal=False, circle_radius=40, line_thickness=7):
+    node_select = -1
+    pressed = False
+    def __init__(self, game, graph=graph.Graph(), reveal=False, circle_radius=40, line_thickness=7, editable=False, on_press=lambda:None):
+        self.on_press = on_press
+        self.editable = editable
         self.graph = graph
         self.game = game
         self.circle_radius = circle_radius
@@ -140,6 +158,21 @@ class Graph(Asset):
     def set_graph(self, graph):
         self.graph = graph
         self.positions = get_positions(self.graph.tam, self.game.WIDTH, self.game.HEIGHT)
+
+    def get_event(self, event, mouse_pos):
+        if event.type == pygame.MOUSEBUTTONUP:
+            self.on_press()
+            self.pressed = True
+        else:
+            self.pressed = False
+        select = -1
+        i = 0
+        for position in self.positions:
+            dist = math.hypot(mouse_pos[0]-position[0], mouse_pos[1]-position[1])
+            if dist<=self.circle_radius:
+                select = i
+            i+=1
+        self.node_select = select
 
     def draw_node(self, i, color=Palette.COLOR_11):
         pygame.draw.circle(self.game.screen, color, self.positions[i], self.circle_radius)
@@ -158,7 +191,11 @@ class Graph(Asset):
 
     def draw(self):
         for i in range(self.graph.tam):
-            if not self.reveal:
+            if self.editable and self.node_select==i and self.pressed:
+                self.draw_node(i=i, color=Palette.COLOR_8)
+            elif self.editable and self.node_select==i and not self.pressed:
+                self.draw_node(i=i, color=Palette.COLOR_5)
+            elif not self.reveal:
                 self.draw_node(i=i)
             elif self.graph.color[i]==self.graph.BLUE:
                 self.draw_node(i=i, color=Palette.BLUE)
@@ -166,6 +203,8 @@ class Graph(Asset):
                 self.draw_node(i=i, color=Palette.GREEN)
             elif self.graph.color[i]==self.graph.RED:
                 self.draw_node(i=i, color=Palette.RED)
+            else:
+                self.draw_node(i=i)
         for u, v in self.graph.edges_list:
             self.draw_edge(u, v)
 
