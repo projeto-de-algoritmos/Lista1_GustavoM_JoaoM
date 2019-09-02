@@ -17,7 +17,7 @@ sudo pip3 install virtualenv
 ### Criação da maquina virtual
 ```shell
 virtualenv env
-k```
+```
 ## Como rodar 
     
 Para execução do projeto primeiro é recomendado a ultilização de uma maquina virtual para a instalação dos requisitos
